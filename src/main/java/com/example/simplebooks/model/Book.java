@@ -77,5 +77,12 @@ public class Book {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+    
+    public Book() {}
+    
+    public Book(String title, String description) {
+    	this.title = title;
+    	this.description = description;
+    }
 
 }
