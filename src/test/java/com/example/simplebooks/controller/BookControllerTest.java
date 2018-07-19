@@ -1,6 +1,11 @@
 package com.example.simplebooks.controller;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,11 +26,12 @@ import com.example.simplebooks.repository.BookRepository;
 public class BookControllerTest {
 
 	
-	@MockBean
+	@MockBean(name = "bookRepository")
 	private BookRepository bookRepository;
 	
 	@Autowired
 	private TestRestTemplate restTemplate;
+	
 	
 	@Test
 	public void createANewBook(){
@@ -36,5 +42,32 @@ public class BookControllerTest {
 		 // then
 		assertThat(bookResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
+	
+	@Test
+	public void findBookById() {
+		
+		//Optional<Book> optBook = bookRepository.findById((long) 2);
+		// given
+		given(bookRepository.findById((long) 2)).willReturn(Optional.of(new Book("Shogun", "feudal japan")));
+		
+		//when 
+		ResponseEntity<Book> bookResponse = restTemplate.getForEntity("/api/books/1", Book.class);
+		
+		//then
+		assertThat(bookResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(bookResponse.getBody()).isEqualTo(new Book("Shogun", "feudal japan"));
+	}
+	
+	 @Test
+	  public void getAllBooks(){
+	    when(bookRepository.findAll()).thenReturn(Collections.emptyList());
+	    
+		//when 
+		ResponseEntity<Book[]> bookResponse = restTemplate.getForEntity("/api/books/", Book[].class);
+		
+		//then
+		assertThat(bookResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(bookResponse.getBody()).isNotEmpty();
+	  }
 
 }

@@ -25,27 +25,27 @@ import com.example.simplebooks.repository.BookRepository;
 @RestController
 @RequestMapping("/api")
 public class BookController {
-
+	
     @Autowired
     BookRepository bookRepository;
 
-    @GetMapping("/books")
+    @GetMapping("/getBooks")
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
 
-    @PostMapping("/books")
+    @PostMapping("/addBook")
     public Book createBook(@Valid @RequestBody Book book) {
         return bookRepository.save(book);
     }
 
-    @GetMapping("/books/{id}")
+    @GetMapping("/getBook/{id}")
     public Book getBookById(@PathVariable(value = "id") Long bookId) {
         return bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
     }
 
-    @PutMapping("/books/{id}")
+    @PutMapping("/updateBook/{id}")
     public Book updateBook(@PathVariable(value = "id") Long bookId,
                                            @Valid @RequestBody Book bookDetails) {
 
@@ -59,7 +59,7 @@ public class BookController {
         return updatedBook;
     }
 
-    @DeleteMapping("/books/{id}")
+    @DeleteMapping("/deleteBook/{id}")
     public ResponseEntity<?> deleteBook(@PathVariable(value = "id") Long bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
